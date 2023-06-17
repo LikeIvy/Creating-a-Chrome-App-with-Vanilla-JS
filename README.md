@@ -67,12 +67,18 @@ rel => relationship
 ---
 ## Variables
 <span style='color:#ffd33d'>선언 방법</span>
-const name(변수명) = "데이터"
+
+**const** name(변수명) = ""
+
+**let** name(변수명) = ""
+
+~~**var** name(변수명) = ""~~
+
 ```JavaScript
 const a = 10;               
 const b = 2;               
-// constant인 variable을 만든것 => variable의 이름은 a이며 5와 같다
 // const => constant(상수[바뀌지 않는 값 = 계속 유지되는 것])
+// constant인 variable을 만든것 => variable의 이름은 a이며 ""와 같다
 
 
 const myName = "ivy";
@@ -84,3 +90,68 @@ console.log(a*b)
 console.log(a/b)
 console.log("My name is "+myName)
 ```
+
+```JavaScript
+let myName = "ivy";
+console.log("My name is "+myName)
+
+myName = "IVYIVY"                   // let으로 만든 변수는 Variable 업데이트가 가능하다
+console.log("My name is "+myName)
+
+
+
+const myName2 = "ivy";              // const로 variable을 만들었다면, 절대 값을 업데이트 할 수 없다
+console.log("My name is "+myName2)  
+```
+
+```JavaScript
+// const로 생성한 변수를 업데이트 하게 될 경우 아래와 같은 에러가 발생한다
+const myName2 = "ivy";              // const로 variable을 만들었다면, 절대 값을 업데이트 할 수 없다
+console.log("My name is "+myName2) 
+
+myName2 = "IVYIVY"                  // => Error : Assignment to constant variable => constant variable에 새로운 값을 대입할 수 없다
+console.log("My name is "+myName2)  // 그럼 왜 const를 이용하냐? => 가끔 몇몇 variable은 절대로 변하지 않도록 해야 할 때가 있다
+                                    // 대부분 const를 기본적으로 사용하고 variable을 업데이트 하고 싶을 경우 let을 사용한다
+```                                       
+
+
+```JavaScript
+var a = "apple"
+console.log("This is "+a) // 과거 JavaScript에는 const, let은 없었고 var를 사용했다(현재도 사용 가능)
+                          // 하지만 var를 사용하면 문제점이 우리 언어를 통한 보호를 받지 못하게 된다
+                          // var에는 특이한 규칙이 있는데 var로 생성한 변수를 원한다면 어디서든 업데이트가 가능하다는 것
+                          // => 만약 실수로 var로 생성한 a의 값을 업데이트해도, 언어가 알려주지 않음
+                          // => 이게 const와 let을 만든 이유
+                        
+let a3 = 3;    // 이런식으로 variable을 업데이트 하고 싶을 경우에만 let을 사용하고
+const a1 = 1;  // 기본적으로는 const를 사용함으로써 한눈에 코드에서 의미를 파악할 수 있다
+               // var를 사용해도 당장 문제가 일어나진 않지만 사용을 지양하고 const, let을 사용하자
+```
+
+
+## Boolean
+
+true = 1, on
+
+false = 0, off
+
+- 로그인을 했는가?
+- 비디오가 재생되고 있는가?
+- 웹사이트가 로딩되고 있는가? 등등에 사용..
+
+
+`true` `false` `null` `undefined`
+
+```JavaScript
+const amIFat = true;   // 파이썬에선 True, False로 앞이 대문자인것과는 다르게 소문자로
+const amIFat2= false;
+console.log(amIFat, amIFat2)
+
+const amIFat3 = null; //파이썬의 None
+console.log(amIFat3)  // null은 자연적으로 발생하지 않음, 우리가 variable안에 어떤 것이 없다는 것을 확실히 하기 위해 쓰는 것("비어있어요"를 의도적으로 표현)
+
+let something;           // something이라는 variable을 만들고 있지만, 값을 주고 있지 않은 것 => variable은 존재하지만, 정의되지 않은 것(undefined)
+console.log(something)   // 그렇기에 컴퓨터 메모리 안에는 존재한다. 즉, 공간은 있는데, 값이 들어가지 않은 것
+                         // 다시 말해 컴퓨터가 이 variable에 대해서 인지하고 있지만, 값이 없는 것
+
+```                        
