@@ -154,4 +154,81 @@ let something;           // something이라는 variable을 만들고 있지만, 
 console.log(something)   // 그렇기에 컴퓨터 메모리 안에는 존재한다. 즉, 공간은 있는데, 값이 들어가지 않은 것
                          // 다시 말해 컴퓨터가 이 variable에 대해서 인지하고 있지만, 값이 없는 것
 
-```                        
+```
+
+## Array
+- 데이터 정렬
+- 데이터 구조에 대한 것
+- 데이터를 어떻게 하면 가능한 최선의 방법으로 정리할 수 있을까
+- 우리는 자료의 검색이나 삽입을 빠르게 할 수 있는 데이터의 저장 방법에 대해 생각하는 데 시간을 쏟는다
+- 데이터 구조라든지 데이터를 어떻게 정리할지에 대해서 고민을 하게 됨
+- 지금 배울 가장 기본적인 데이터 구조는 array(배열)
+- <span style='color:#ffd33d'>가장 기초적이고 필수적인 자료구조</span>
+- array의 목적은 하나의 variable안에 데이터의 list를 가지는 것
+- 이번에 배울것은 array를 생성하는 방법과 array 안에 있는 elements를 받아오는 방법을 알아볼 것
+- 인덱스는 0부터 시작
+
+
+```JavaScript
+// 1주일의 요일을 만들고 싶다고 가정해보자
+
+const mon = "mon";
+const tue = "tue";
+const wed = "wed";
+const thu = "thu";
+const fri = "fri";   // 보다시피 좋은 방법은 아니다
+const sat = "sat";   // 효율적이라고 할 수 없기 때문인데, 왜그럴까?
+const sun = "sun";   // 내가 만약 이것들을 리스트로 그룹화시키고 싶다면 어떻게 할 수 있을까?
+```
+
+```JavaScript
+const daysOfWeek = mon + tue + wed + thu + fri + sat + sun;
+console.log(daysOfWeek)
+// mon~sun 까지 매우 긴 string을 갖게 된걸 볼 수 있다
+// 이 상태에서는 금요일을 넘겨달라고 해도 금요일만 넘겨줄 수 없음
+// 무언가를 나열하기 위한 좀 더 나은 방법이 필요함
+// 데이터 타입들을 그룹으로 묶기 위한 더 좋은 방법이 있어야 함
+```
+
+```JavaScript
+const daysOfWeek2 = [mon, tue, wed, thu, fri, sat, sun];        // daysOfWeek2라는 array 생성
+                                                                // 시작과 끝에 대괄호를 사용
+                                                                // array안 각각의 항목은 쉼표로 분리
+
+const nonsense = [1, 2, "hello", false, null, true, undefined]; // nonsense라는 array 생성
+
+console.log(daysOfWeek2, nonsense);
+```
+
+
+```JavaScript
+// array가 왜 필요할까?
+// 예를 들어 내가 구매하고자 하는 것들의 리스트가 있는데 array가 없다면?
+
+const aplle = "apple"           // 이런 식으로 계속 변수를 생성할 수는 없다
+const potato = "potato"         // 정말 많은 변수가 필요해지게 되며
+                                // 코드의 가독성이 떨어지고 연산에 불편함을 겪는다
+
+
+
+// array를 사용한다면?
+
+const nonsense = [1, 2, "hello", false, null, true, undefined];    // 하나의 배열에 여러 자료형 데이터들을 담을 수 있고
+const toBuy = ["potato", "tomato", "pizza"];                       // 변수의 수를 줄여주고, 연산에 편리하다               
+                                                                   // 관련성 있는 데이터를 함께 변수에 저장하므로 데이터를 탐색하는데 용이해짐
+```
+
+
+```JavaScript
+const daysOfWeek3 = ["mon", "tue", "wed", "thu", "fri", "sat"];
+console.log(daysOfWeek3);
+
+
+// Get Item from Array
+console.log(daysOfWeek3[0]);   // array안의 데이터에 접근하고 싶다면 varialbe이름을 적어주고(array를 갖는 variable이름)
+                               // 대괄호를 열어 우리가 얻고 싶은 항목의 번호를 넣고 대괄호를 닫아준다
+
+// Add one more day to the array
+daysOfWeek3.push("sun");       // push()를 사용한다
+console.log(daysOfWeek3);
+```
