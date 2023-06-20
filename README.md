@@ -232,3 +232,80 @@ console.log(daysOfWeek3[0]);   // array안의 데이터에 접근하고 싶다�
 daysOfWeek3.push("sun");       // push()를 사용한다
 console.log(daysOfWeek3);
 ```
+
+## Object
+- 무언가를 리스트 안에 정리할 수 있게 되었다(요일, 구매하고 싶은 것들...)
+- 때로는 list가 아닌 object라는 것을 만들어야 할 때가 있다
+- 게임안의 캐릭터를 만든다고 가정해보자
+- 만약 우리에게 object라는 것이 없다면
+
+```JavaScript
+const platyerName = "ivy";
+const playerPoints = 121212;
+const playerHandsome = false;
+const playerFat = "little bit"
+```
+혹은
+
+```JavaScript
+const player = ["ivy", 121212, false, "little bit"]
+// array를 이용해봤지만 좋지 못함
+// ivy~little bit 등 자체의 의미만 알 수 있을 뿐 무얼 의미하는지 얻을 수 없다(옆에 설명이 필요함)
+// player[0] == name
+// plater[1] == points  =>  이런식으로 프로그래머가 이해할 수 있도록 도울 수 있지만 이 또한.. 많은 varialbe을 만들어야 하는 방식보다 더 나은 것이 필요함
+```
+
+
+- console.log나 array.push처럼 하나의 entity에 대해서 설명하고 있다는걸 알기 쉽게 표현하는것이 좋다
+    - player.name
+    - player.points
+    - plyer.handsome...
+    - 이걸 위해 필요한 것이 바로 object
+
+
+```JavaScript
+// object
+// variable 처럼 const로 생성하되 {}중괄호를 이용한다
+// 중괄호 안에는 property(특성)을 작성한다
+// object안에서는 이퀄을 사용하지 않는다, 콜론을 사용한다
+const player = {
+    name : "ivy",
+    points : 10,
+    fat : true,
+};
+```
+
+
+```JavaScript
+console.log(player);         // console또한 object임을 알 수 있고, 그 안에 log가 있는걸 알 수 있다 
+console.log(player.name);    // 접근1
+console.log(player["name"]); // 접근2 같은 결과
+```
+
+
+```JavaScript
+console.log(player);
+player.fat = false;     // object를 업데이트하는 것 또한 가능하다
+console.log(player);    // 업데이트 되었다. 하지만 const는 variable을 배울 때 업데이트는 불가능하다고 배웠는데 어떻게?
+                        // const를 변경하는것이 불가능하다는 것은 여전히 사실임. 그러나 여기서 하는건 object안의 무언가를 수정하는 것이다(object는 여전히 동일)
+                        // 에러는 constant 전체를 하나의 값으로서 업데이트 하려고 할 때 발생한다
+                        // 여기서는 player 자체를 업데이트하려고 하면 에러가 발생
+```
+
+
+```JavaScript
+
+console.log(player)
+player.lastName = "potato"; // 존재하지 않던 property인데 어떻게 될 까?
+console.log(player);        // lastNmae이라는 property가 생성된 걸 확인
+                            // 업데이트 뿐만 아니라 원한다면 원하는 어떤 property든 만들 수 있다
+```
+
+
+```JavaScript
+
+console.log(player);
+player.points = player.points + 15; // 기존 데이터를 15로 업데이트하는게 아닌 기존 데이터에 15를 더하고 싶다면
+console.log(player);
+```
+
