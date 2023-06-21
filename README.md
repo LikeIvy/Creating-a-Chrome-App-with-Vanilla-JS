@@ -426,3 +426,186 @@ player.sayHello(player.name); // player의 name을 인자로 쓸 수도 있음
 player.sayHello("sun");
 player.sayHello("sky");
 ```
+
+
+
+
+## Recap
+
+```JavaScript
+const a = 5;
+let isNicoFat = false;
+
+isNicoFat = true;
+
+// 항상 const를 사용하되 업데이트가 필요할 때 let 사용
+// var는 사용하지 않는다!
+
+const b = null; // 값이 비어있음을 표현하기 위해 사용
+
+let hello;
+console.log() // undefined => 값이 없다
+
+
+// 여러 값을 넣고 싶을 때
+const days = [a,b,1,2,"apple",null, undefined];
+
+const toBuy = ["potato","pizza","tomato"];
+console.log(toBuy);
+console.log(toBuy[0]);
+
+toBuy[2] = "water";     // 업데이트
+console.log(toBuy);
+
+toBuy.push("banana");   // 추가
+console.log(toBuy);
+```
+
+```JavaScript
+const days2 = ["mon","tue","wed"]  // 같은 종류, 즉 한주의 요일들이라는 걸 알 수 있다
+                                   // 하지만 의미가 있는 property를 저장하려고 할 때 문제(연관되어 있는 property들을 그룹으로 묶어서 저장해야 할 때)
+
+const player = {    // player라는 variable안에 name이라는 varialble(정식명칭은 property)를 만든 것
+    name : "ivy",
+    age : 28,
+};
+
+
+console.log(player, console)
+console.log(player.name)    // object에서 item(정확히는 property)를 가져오는 방법
+
+player.name="IVYYY"         // 업데이트
+console.log(player)
+
+player.addr = "where"
+console.log(player)
+
+
+function plus(){
+    console.log(2+2);
+    console.log(2/5);
+}
+
+plus;
+plus();
+
+
+function plus2(a, b){
+    console.log(a+b);
+    console.log(a/b);
+}
+
+plus2(20,40);
+
+
+function minusFive(a){
+    console.log(a-5);
+}
+
+minusFive(20);
+
+
+const calculator = {
+    plus : function(a,b){
+        console.log(a+b);     
+    },
+    minus : function(a,b){
+        console.log(a-b);
+    },
+    divide : function(a,b){
+        console.log(a/b);
+    },
+    square : function(a,b){
+        console.log(a**b);
+    }
+}
+
+calculator.plus(2,3);
+calculator.minus(2,3);
+calculator.divide(2,3);
+calculator.square(2,3);
+```
+
+## Return
+
+#### console.log는 console에 무언가를 log하는 것(기록하여 보여줌)
+#### 이제는 console.log가 아닌 function 밖에서 결과값을 얻을 수 있게 진행할 것 
+
+```JavaScript
+const calculator = {
+    plus : function(a,b){
+        alert(a+b);     
+    },
+    minus : function(a,b){
+        alert(a-b);
+    },
+    divide : function(a,b){
+        alert(a/b);
+    },
+    square : function(a,b){
+        alert(a**b);
+    }
+};
+
+console.log(calculator.plus(2,3)); // alert은 잘 출력되지만 log는 => undefined 왜? => 함수가 return하고 있는 값이 없기때문
+```
+
+
+
+
+```JavaScript
+const age = 83;
+
+function calculateKrAge(ageOfForeigner){
+    ageOfForeigner + 2;     // 이 결과를 코드로 받고 싶다. 어떻게?
+}                           // 함수는 어떤 기능을 수행하는 것이라고 생각하기 보다는
+                            // 어떤 일을 수행하고 그 결과를 알려주는 것이라고 생각하자
+
+
+
+const krAge = calculateKrAge(age);
+
+console.log(krAge); // krAge가 정의되지 않았음(undefined).. 왜?
+                    // return이 없기 때문임
+
+
+
+function calculateKrAge2(ageOfForeigner){
+    return ageOfForeigner + 2;     // function이 function의 밖과 소통하는 방법
+}
+
+const krAge2 = calculateKrAge2(age);
+
+console.log(krAge2);               // 값이 잘 출력되는걸 확인 할 수 있다
+```
+
+
+```JavaScript
+const calculator2 = {
+    plus : function(a,b){
+        return a+b;     
+    },
+    minus : function(a,b){
+        return a-b;
+    },
+    times : function(a,b){
+        return a*b
+    },
+    divide : function(a,b){
+        return a/b;
+    },
+    power : function(a,b){
+        return a**b;
+    }
+};
+```
+
+```JavaScript
+const plusResult = calculator2.plus(2,3);              
+const minusResult = calculator2.minus(plusResult,10);              // 이런 상호의존적인 코드가 어떻게 가능했을까? return 때문
+const timesResult = calculator2.times(10,minusResult);             // 전에는 오직 console에서만 plus의 결과를 알 수 있었지 plus의 결과값을 얻을 수 없었다
+const divideResult = calculator2.divide(timesResult, plusResult);  // console은 그냥 보여주기 위한 것일 뿐
+const powerResult = calculator2.power(divideResult, minusResult);  // 우리의 코드에서는 결과 값을 알 수 없었음
+```
+
+
