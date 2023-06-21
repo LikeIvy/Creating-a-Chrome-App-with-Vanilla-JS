@@ -608,4 +608,110 @@ const divideResult = calculator2.divide(timesResult, plusResult);  // console은
 const powerResult = calculator2.power(divideResult, minusResult);  // 우리의 코드에서는 결과 값을 알 수 없었음
 ```
 
+## Conditional(조건문)
 
+- 조건문은 `true`인지 `false`인지 알려준다
+- 무언가를 확인해야 할 때 거의 대부분 사용하게 된다
+    - 사용자가 로그인되어 있다면, 무언가를 보여준다
+    - 사용자가 무언가를 할 때 반응하는 것을 만들 때 등등..키워드는 `if`
+```JavaScript
+const age = prompt("How old are you?");          // prompt()는 사용자에게 창의 띄울 수 있도록 해준다
+                                                 // 이렇게 띄워진 창은 javascript를 일시정지 시킨다(답하기 전까지)
+                                                 // 만약 답하지 않고 cancel을 누르면 null값으로 들어감
+                                                 // 더 이상 prompt function을 사용하지 않는 이유
+                                                 // message가 별로 예쁘지도 않고 아무런 css를 적용할 수 없음(prompt=굉장히 오래된 방법)
+console.log(age);
+
+console.log(typeof age);  // 숫자를 입력하든 문자를 입력하든 string으로 받는걸 알 수 있다
+                          // 문법이 이상해 보일 수 있지만 javascript가 원래 그럼
+                          // console.log(typeof(age))도 가능함
+```
+
+#### type을 변경하는 방법
+- 이걸위해 만들어져 있는 function이 있음 => `parseInt`
+  
+```JavaScript
+console.log(typeof age, typeof parseInt(age));
+
+// string이면 숫자와 크기 비교를 할 수 가 없지만 type을 number로 변경하면서 가능해짐
+// 또한 나이를 물어봤는데, 사용자가 숫자가 아닌 걸 입력했을 경우를 인지할 수 있다
+// 문자를 입력시 NaN(Not a Number)이 출력
+// 당연한 이야기지만 "1123" 와 같이 문자열로 된 숫자는 parseInt를 통해 숫자로 변경이 가능하기 때문에 괜찮음, "abcdef"같은 문자들은 불가능
+
+console.log(age, parseInt(age));
+
+// 이제 parseInt() 후의 age결과가 number형이 아니라면 message를 띄울 것임
+const age2 = parseInt(prompt("How old are you?")); // function은 내부에서부터 외부로 실행됨(prompt가 먼저 실행되고 parseInt가 실행 된다)
+console.log(age2);
+```
+
+
+### 무엇이 NaN인지를 판별하는 방법
+- isNaN이라는 function이 있다
+- 첫 번째 argument(인자)는 숫자여야 한다
+- isNaN은 boolean을 return한다
+
+```JavaScript
+const age3 = parseInt(prompt("How old are you?")); 
+console.log(isNaN(age3)); // return 결과는 false => 즉, NaN이 아니다(여기선 == 숫자)
+```
+
+
+```JavaScript
+if(condition){
+    // condition === true
+} else{
+    // condition === false
+}
+
+조건문이 참(true)이면 if의 코드가 실행 되고
+아니라면(false) else코드가 실행 된다
+else는 필수가 아님. 한 가지 조건일 때는 else없이 if만도 사용이 가능! => 이럴 경우 참이면 if문을 실행하고 아니라면 아무것도 하지 않게 된다
+condition(조건)자리에는 무엇이 들어가야 할까? 오직 boolean만 들어갈 수 있음 => condition은 boolean으로 판별 가능해야 된다(true or false 오직 두 가지 옵션만이 존재)
+
+if(isNaN(age3)) {
+    console.log("Please write a number");
+} else {
+    console.log("Thank you for writing your age");
+}
+```
+
+```JavaScript
+const age3 = parseInt(prompt("How old are you?")); 
+console.log(isNaN(age3));                   // 정상적인 숫자를 입력했을 경우 return 결과는 false => 즉, NaN이 아니다(여기선 == 숫자)
+
+
+
+
+if(isNaN(age3) || age3 < 0) {               // || => or(둘 중 하나만 true여도 true)
+    console.log("Please write a number");
+} else if (age3 < 18) {                     // 좀 더 많은 조건이 필요하다면? else if
+    console.log("you are too young");
+} else if (age3 >= 18 && age3 <=50) {       // && => and(a,b 두 조건 모두 true여야 true, 나머지는 false)
+    console.log("you can drink");    
+} else {
+    console.log("You can drink, but.. please be careful");
+}
+```
+### AND
+- true && true === true     
+...나머지 false 
+
+
+### OR
+- true || true  === true
+- true || false === true
+- false || true === true
+- false || false === false
+
+
+
+`(같다) ===`
+
+`(같지않다) !==`
+
+```JavaScript
+if((a && b) || (c && d) || (x || w)){  // javascript는 작은 괄호부터 시작해서 큰 괄호로 넘어간다
+    // a && b 가 true이고 나머지가 false일 때 이 코드가 실행 될까? => 정답은 YES(or니까 하나만 참이여도 참) 
+}
+```
