@@ -715,3 +715,138 @@ if((a && b) || (c && d) || (x || w)){  // javascript는 작은 괄호부터 시�
     // a && b 가 true이고 나머지가 false일 때 이 코드가 실행 될까? => 정답은 YES(or니까 하나만 참이여도 참) 
 }
 ```
+
+## The Document  Object
+
+- 자바스크립트를 이용해서 브라우저에 대해 조금 더 이해해보는 시간을 가져보자
+- JavaScript를 사용하는 이유는 HTML과 상호작용하기 위해서
+- 즉, HTML의 Element들을 JavaScript를 통해 변경하고, 읽을 수 있다는 것
+- document는 브라우저에 이미 존재하는 object, 우리가 접근할 수 있는 HTML을 가리키는 객체이다
+- JavaScript에서 HTML을 읽어올 뿐만 아니라, HTML을 변경할 수도 있다
+- 모든 것들은 document로부터 시작 => 왜냐면 document는 우리의 웹 사이트를 의미함
+
+```JavaScript
+const title = document.getElementById("title"); // getElementByIdsms document의 함수이고 document는 HTML을 뜻함
+
+console.log(title);
+console.dir(title);
+
+title.innerText="Got you!" // 이게 가능한 이유는 HTML에서 title이라는 id를 부여하고 getElementById라는 함수로 element를 가져왔기 때문
+```
+
+```JavaScript
+console.log(title.id);
+console.log(title.className);
+
+// 대부분의 경우에는 id를 추가하지 않을 거임
+// id는 사용하기 편리하지만, 보통 className을 사용하거나 둘 다 사용함
+// 대부분의 경우에는 class name을 모든 곳에 추가하지는 않을거임
+
+const hellos = document.getElementsByClassName("hello");
+console.log(hellos);
+
+
+
+const title = document.getElementsByTagName("h1");
+console.log(title);    // title. 으로 접근할 수 없음 title이 object가 아니고 array이기 때문에
+```
+
+## Searching For Elements
+
+- 노마드코더에서 추천하는 element를 가지고 오는 멋진 방법은 querySelector, querySelectorAll임
+- querySelector는 element를 CSS방식으로 검색할 수 있음
+- => hello란 class 내부에 있는 h1을 가지고 올 수 있다는 것을 의미
+
+```JavaScript
+const title2 = document.querySelector(".hello h1");     // querySelector에서는 hello가 class name이라는 것(.으로 접근)과 그 안의 h1을 명시해줘야 한다.
+console.log(title2)                                     // hello라는 class가 3개 존재하고 각각 h1태그를 가지고 있었지만 첫 번째 것만 가져왔음
+                                                        // querySelector는 첫 번째, 하나의 element만 반환하기 때문임
+                                                        // 3개 모두 가져오고 싶다면 querySelector가 아니라 querySelectorAll을 써야한다
+
+const title3 = document.querySelectorAll(".hello h1"); 
+console.log(title3)
+```
+
+#### querySelector을 이용할 때 #id명을 써서 가져올 수도 있음
+#### getElementById("id명")과 같은 결과를 가져다 준다
+```JavaScript
+const title = document.querySelector("#id"); querySelector에서는 내가 뭘 검색하는지 명확하지 않으니까 id(#)을 명시해주는 것
+const title = document.getElementById("id"); 이 코드는 당연히 id(#)을 적어줄 필요가 없음, 여기선 내가 id를 찾고 있다는 걸 알기 때문
+``` 
+
+#### 두 코드가 하는일은 같지만 querySelector에서는 해당 h1태그 form등을 가져오는 것을 명시해서 가져올 수 있음
+#### getElementById는 불가능함
+```JavaScript
+const title = document.querySelector("#id"); ("#id h1") 혹은 ("#id form")
+const title = document.getElementById("id"); */
+```
+
+
+## Event
+
+- HTML코드중.. `<script src="app.js"></script>`
+- app.js가 있기 때문에 javascript를 통해 HTML의 내용을 가져올 수 있음
+- app.js를 import하지 않았다면, 당연히 document는 여기 존재할 수도 없었음
+- point는 document가, HTML이 app.js를 load하기 때문에 존재하는 것
+
+
+
+```JavaScript
+const title = document.querySelector(".hello");              hello란 class를 가진 element를 하나 가지고 올 수 있음
+
+const title2 = document.querySelectorAll(".hello");          hello란 class를 가진 모든 element를 가져올 수 있음
+
+const title3 = document.querySelector("#hello:first-child"); 위의 두 가지를 섞어서 사용할 수도 있음 ex) #id:first-child 
+```
+  
+```JavaScript
+const title = document.querySelector(".hello:first-child h1");
+console.log(title);   
+
+
+const title2 = document.querySelector(".hello:first-child h1");
+title2.innerText = "Hello!!";    
+
+
+
+const title3 = document.querySelector("div.hello:first-child h1"); // class hello를 가진 div 내부의 first-child인 h1을 찾아라
+console.log(title3);
+console.dir(title3);  // element의 내부를 보고 싶다면 dir
+
+title3.style.color = "orange"; 
+```
+
+```JavaScript
+const title = document.querySelector("div.hello:first-child h1");
+
+// addEventListener는 말 그대로 , event를 listen하는 것
+title.addEventListener();
+
+// 하지만 자바스크립트에 무슨 event를 listen하고 시은지 알려줘야 한다
+title.addEventListener("click");
+
+// 누군가 title을 실제로 click 했을 때 무언가를 해줘야 함
+// 함수를 만들거임
+function handleTitleClick(){
+    console.log("title was clicked");
+}
+
+// 정의한 function을 두 번째 인수로 전달
+// 이제 click event를 listen하고, 이 click event가 발생하면, handleTitleClick이라는 function이 동작
+title.addEventListener("click", handleTitleClick);  // 여기서 중요한건 ()를 넣지 않는 것
+                                                    // JavaScript에 function만을 넘겨주고 유저가 click할 경우에 JavaScript가 실행버튼을 대신 눌러주길 바라기 때문에
+```
+
+
+```JavaScript
+const title2 = document.querySelector(".hello h1");
+
+title2.innerText = "Click Me!!";
+title2.style.color = "orange";
+
+function handleTitleClick2(){
+    console.log("title was clicked");
+}
+
+title2.addEventListener("click", handleTitleClick2);
+```
