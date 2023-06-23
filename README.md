@@ -931,3 +931,147 @@ window.addEventListener("offline", handleWindowOffline);    // wifi 끊김 감�
 window.addEventListener("offline", handleWindowOnline);     // wifi 연결 감지
 ```
 
+
+## CSS in JavaScript
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1");
+
+
+function handleTitleClick(){
+    if(h1.style.color === "blue"){
+        h1.style.color = "tomato";
+    } else {
+        h1.style.color = "blue";
+    }
+}
+
+
+h1.addEventListener("click", handleTitleClick);
+```
+
+```JavaScript
+// h1.style.color를 여러번 호출하기 보다는
+// 좀 더 코드를 보기 좋게 만들어 보자
+// 우선, 이 color 상태를 저장 해보자
+
+function handleTitleClick(){
+    const currentColor = h1.style.color;  // getter로서 최근 color값을 복사하는 역할을 한다
+    let newColor;                         // setter로서 변수에 대입된 색상값을 h1.style.color에 최종적으로 할당하는 역할을 한다
+    if(currentColor === "blue"){          // 때문에 의미론적으로 봤을 대 currentColor를 const로, newColor를 let으로 할당한 것
+        newColor = "tomato";
+    } else {
+        newColor = "blue";
+    }
+    h1.style.color = newColor;
+}
+
+h1.addEventListener("click", handleTitleClick);
+```
+### JavaScript는 animation에 적합
+### CSS는 style작업에 적합하다
+
+
+```JavaScript
+// style.css에 active라는 class를 생성한 상황
+const h1 = document.querySelector("div.hello:first-child h1");
+
+function handleTitleClick(){
+    h1.className = "active";    // h1에 active class 전달
+                                // 이 h1.className은 getter이면서 setter다
+}                               
+    
+
+h1.addEventListener("click", handleTitleClick);
+
+```
+
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1")
+function handleTitleClick(){    
+    console.log(h1.className);   // 무슨말이냐면, 만약 console.log로 h1.className을 출력한다면 className의 현재 값을 얻게 된다
+}                                // 이 상태에선 당연하게도 아무것도 출력되지 않음
+                                 // 개발자 도구에서 h1태그에 class name을 추가해 준다면 class name이 출력되는걸 확인할 수 있음
+                                 // 즉, 현재의 class를 얻어올 수 있지만 class를 변경할 수도 있다!                 
+      
+
+h1.addEventListener("click", handleTitleClick);
+```
+
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1");
+
+function handleTitleClick(){
+    if(h1.className === "active"){    // 여전히 개선의 여지가 있는 코드임(개선을 위한 두 가지 방법이 있음)
+        h1.className = "";            // 코드를 깔끔하게 하는 한 가지 방법은 다음 회차에서
+    } else {                          // 지금 나머지 한 가지 방법을 해볼거임
+        h1.className = "active";      // 지금 코드를 보면 active라는 string을 두 번 사용하고 있다
+    }                                 // 이것은 error의 위험이 있다(오타로 인한 에러가 생각보다 굉장히 자주 발생)
+}                                     // active라고 style.css에서 class name을 정의했는데 이런 걸 raw value라고 함(개발자가 이렇게 적겠다고 선택한 것)
+
+h1.addEventListener("click", handleTitleClick);
+```
+
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1");
+
+function handleTitleClick(){
+    const activeClass = "active"            // 변수를 하나 생성함으로써 오탈자의 위험을 줄이고
+    if(h1.className === "activeClass"){     // 잘못된 변수명을 입력하게 되면 JavaScript가 에러 메시지를 띄워주니 관리가 훨씬 쉬워짐
+        h1.className = "";            
+    } else {                          
+        h1.className = "activeClass";     
+    }                                 
+}                                     
+
+h1.addEventListener("click", handleTitleClick);
+```
+## 현재 문제점
+
+- 지금 한 가지 문제점이 있는데 지금은 h1이 기존에 class를 갖고있지 않았기 때문에 class name을 추가하고 공백으로 만들어 없애는게 문제가 되지 않았지만
+- 만약 h1태그가 class를 갖고있었다면? => 기존 class를 유지하지 못하고 지워버리게 되기때문에 문제가 됨
+- 물론 위의 함수를 예시로 내부에 `const activeClass = "active 기존클래스이름" `으로 설정하여 유지할 순 있지만
+좋지못한 방법이다
+- 왜냐하면 html에서 이걸 조금만 변경(class를 추가한다던지..)한다면 JavaScript는 물론이고 CSS까지 업데이트 해줘야 된다
+- 좋은 방법은 JavaScript로 모든 class name을 변경하게 하지 않는 것
+- 즉, 기존 class가 있다면 기존 class를 유지하면서 active class를 변경하는 것
+
+
+### 나머지 한 가지 방법, `classList`를 사용하는 방법 
+### classList는 말 그대로, 우리가 class들의 목록으로 작업할 수 있게끔 허용해준다
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1");
+
+function handleTitleClick(){
+    const activeClass = "active"           
+    if(h1.classList.contains(activeClass)){     // classList는 유용한 function들이 있는데 그 중 하나가 contains
+        h1.classList.remove(activeClass)        // contains는 우리가 명시한 class가 HTML element의 class에 포함되어 있는지 말해준다(classList가 activeClass를 포함하고 있는지 확인)
+    } else {                                    // 여기서 우리가 하는건, HTML element가 가지고 있는 또 하나의 요소를 사용하는 것(classList)
+        h1.classList.add(activeClass);          // classList를 살펴보면 element의 class 내용물을 조작하는 것을 허용하는 것을 알 수 있다
+    }                                 
+}                                     
+
+h1.addEventListener("click", handleTitleClick);
+```
+
+- 위의 과정들은 개발자들이 아주 흔하게 하는 작업들이다
+- 때문에 좀 더 편리한 function이 존재하므로 이용해보자
+- toggle => class name이 존재하는지 확인한다 
+- => 만약 class name이 존재한다면 toggle은 class name을 제거할 것
+- => 만약 class name이 존재하지 않는다면 toggle은 class name을 추가할 것
+
+```JavaScript
+const h1 = document.querySelector("div.hello:first-child h1");
+
+function handleTitleClick(){
+    h1.classList.toggle("active");  // 지금은 string을 반복할 일이 없어서 변수 지웠음(반대로 말하면 string을 반복하는 순간 const를 생성해야 할 순간이다)
+}                                   // 단 한줄로 위와 같은 효과
+                                    // toggle은 h1의 classList에 active가 이미 있는지 확인 해서
+                                    // 있다면 active를 classList에서 제거, 없다면 active를 classList에 추가
+                                    // 간단한 예시로 스마트폰에 잠긴 lock버튼을 누르면 스크린을 잠그고 다시 한번 누르면 스크린을 켜주는 버튼과도 같다
+h1.addEventListener("click", handleTitleClick);
+```

@@ -2,3 +2,18 @@ body{
     background-color: beige;
 }
 
+h1{
+    color : cornflowerblue;
+    transition : color .5s ease-in-out;
+}
+
+/* active란 class를 생성
+그리고 이 class는 color를 tomato로 지정
+이제 이 class를 어떤 element에 지정해 주면, 어떤 element든지(h1이던, span이건...등등)tomato 색을 가지게 될 것 */
+.active{
+    color : tomato;
+}
+
+.sexy-font{
+    font-family: 'Courier New', Courier, monospace;
+}
