@@ -1,62 +1,71 @@
-// HTML코드중..<script src="app.js"></script>
-// app.js가 있기 때문에 javascript를 통해 HTML의 내용을 가져올 수 있음
-// app.js를 import하지 않았다면, 당연히 document는 여기 존재할 수도 없었음
-// point는 document가, HTML이 app.js를 load하기 때문에 존재하는 것
+// 내가 listen하고 싶은 event를 찾는 가장 좋은 방법은, 구글에 찾고 싶은 element의 이름(예를 들어 h1)을
+// Mozilla Developer Network인 MDN에 검색해보는 것
+// 지금 하고있는 것들은 JavaScript로 HTML element를 가져오고, 가져온 element에 event listener을 추가해 주는 것
+
+const h1 = document.querySelector(".hello:first-child h1");
 
 
-
-/* 
-const title = document.querySelector(".hello");              hello란 class를 가진 element를 하나 가지고 올 수 있음
-
-const title2 = document.querySelectorAll(".hello");          hello란 class를 가진 모든 element를 가져올 수 있음
-
-const title3 = document.querySelector("#hello:first-child"); 위의 두 가지를 섞어서 사용할 수도 있음 ex) #id:first-child 
-*/
-  
-
-/* const title = document.querySelector(".hello:first-child h1");
-console.log(title);   
-
-
-const title2 = document.querySelector(".hello:first-child h1");
-title2.innerText = "Hello!!";    
-
-
-
-const title3 = document.querySelector("div.hello:first-child h1"); // class hello를 가진 div 내부의 first-child인 h1을 찾아 와라
-console.log(title3);
-console.dir(title3);  // element의 내부를 보고 싶다면 dir
-
-title3.style.color = "orange"; */
-
-//========================================================//
-const title = document.querySelector("div.hello:first-child h1");
-
-// addEventListener는 말 그대로 , event를 listen하는 것
-//title.addEventListener();
-
-// 하지만 자바스크립트에 무슨 event를 listen하고 시은지 알려줘야 한다
-//title.addEventListener("click");
-
-// 누군가 title을 실제로 click 했을 때 무언가를 해줘야 함
-// 함수를 만들거임
 function handleTitleClick(){
-    console.log("title was clicked");
+    h1.style.color = "blue";     // 이 코드의 경우 잘못된것은 없다.                                   
+}                                   // 하지만 대부분의 경우에 style을 변경하는 것은 CSS를 통해서 변경되어야 한다
+                                    // 다음 회차에서는 CSS를 다뤄볼 것
+
+function handleMouseEnter(){
+    h1.innerText = "Mouse is here!";
 }
 
-// 정의한 function을 두 번째 인수로 전달
-// 이제 click event를 listen하고, 이 click event가 발생하면, handleTitleClick이라는 function이 동작
-title.addEventListener("click", handleTitleClick);  // 여기서 중요한건 ()를 넣지 않는 것
-                                                    // JavaScript에 function만을 넘겨주고 유저가 click할 경우에 JavaScript가 실행버튼을 대신 눌러주길 바라기 때문에
-
-
-const title2 = document.querySelector(".hello h1");
-
-title2.innerText = "Click Me!!";
-title2.style.color = "orange";
-
-function handleTitleClick2(){
-    console.log("title was clicked");
+function handleMouseLeave(){
+    h1.innerText = "Mouse is gone!";
 }
 
-title2.addEventListener("click", handleTitleClick2);
+
+function handleWindowResize(){
+    document.body.style.backgroundColor = "tomato";
+}       // 헷갈림 방지 위해 기존 title변수를 h1으로 바꿨는데 바뀌기 전으로 가정하고
+        // 만약 document.title로 접근한다면 우리가 원하는 h1이 아닌 <title></title>에 접근할 것임
+        // document 밑으로 h1, div같은 것들은 가져올 수 없음
+        // body, head, title같은 중요한 element들만 가능
+        // 나머지 element들은 querySelector, getElementBYId등으로 찾아와야 함
+
+function handleWindowCopy(){
+    alert("copier!!");
+}
+
+function handleWindowOffline(){
+    alert("SOS no WIFI!!");
+}
+
+function handleWindowOnline(){
+    alert("GOOD");
+}
+
+// 3가지의 event가 발생하고
+// JavaScript가 이 3가지의 function을 조작해준다
+// 우리가 직접 실행시킨 것은 없음(function의 실행버튼인 ()를 쓰지 않았음)
+// JavaScript에 뭘 할지 알려주고 JavaScript는 그걸 수행함
+h1.addEventListener("click", handleTitleClick);      // 클릭 감지(JavaScript에게 누군가 h1을 클릭하면 handleTitleClick을 실행하라고 이야기 해준것)
+h1.addEventListener("mouseenter", handleMouseEnter); // 마우스가 위치한 것을 감지
+h1.addEventListener("mouseleave", handleMouseLeave); // 마우스가 해당 위치 벗어난 것을 확인
+
+
+/* // event 사용에는 두 가지 방법이 있다
+
+// 첫 번째는 지금까지 사용했던 addEventListener()
+title.addEventListener("click", handleTitleClick);
+
+// 두 번째는 title.onclick()
+h1.onclick = handleTitleClick;
+h1.onmouseenter = handleMouseEnter;
+h1.onmouseleave = handleMouseLeave; */
+
+// 하지만, 노마드코더에서 addEventListener를 더 추천하는 이유는
+// 나중에 removeEventListener를 통해서 event listener를 제거할 수 있기 때문
+
+
+
+
+//document가 JavaScript에서 기본적으로 제공되듯이 window도 기본적으로 제공 된다
+window.addEventListener("resize", handleWindowResize); // 화면 크기 변화 감지
+window.addEventListener("copy", handleWindowCopy);     // copy 감지
+window.addEventListener("offline", handleWindowOffline);
+window.addEventListener("offline", handleWindowOnline);
