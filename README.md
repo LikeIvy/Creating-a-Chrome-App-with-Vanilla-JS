@@ -1239,7 +1239,298 @@ loginButton.addEventListener("click", onLoginBtnClick);
 </body>
 </html>
 ```
+
+
+
+## Events
+
 - input을 form안에 넣었을 경우에는 엔터를 누를 때마다 form은 자동적으로 submit되고 있음
 - 이건 우리가 원하는게 아님, 왜냐면 form이 submit될 때마다 페이지가 새로고침 되기 때문
 - 이제 우리는 브라우저가 새로고침하지 않고 user정보를 저장하도록 하고 싶다
 - form이 submit되는걸 막아보자
+
+
+
+#### submit이라는 event가 발생하는 걸 아예 막거나 중간에 개입해서 submit event가 발생했다는 걸 파악하고 싶음
+
+
+```JavaScript
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+
+function onLoginSubmit(){
+    const username = loginInput.value;
+    console.log(username);
+}
+
+loginForm.addEventListener("submit", onLoginSubmit);
+```
+
+- form안에 있는 input의 버튼을 누르거나, enter를 누르면 submit될 때마다 페이지가 새로고침 된다
+- 브라우저가 기본적으로 그렇게 설계되어 있기 때문
+- 이런 브라우저의 기본 행동을 Browser default라고 부른다
+- 이것을 막는게 `preventDefault`
+<br>
+<br>
+<br>
+<br>
+
+
+```JavaScript
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+
+function onLoginSubmit(event){         // event가 아닌 tomato등 아무 이름을 써도 상관은 없으나 event로 쓰는게 관례      
+    event.preventDefault();            // event object는 preventDefault함수를 기본적으로 갖고 있음
+    console.log(loginInput.value);     // preventDefault함수는 브라우저가 기본 동작을 실행하지 못하게 막는다
+}
+
+ 
+loginForm.addEventListener("submit", onLoginSubmit);    // submit 이벤트가 발생한다면, onLoginSubmit함수를 실행시킨다는 의미
+                                                        // 그러나, 사실 submit됐다고 함수를 그냥 실행시키는 것이 아니라 event라는 파라미터를 넣어주고 나서 실행되는 것
+                                                        // 즉 => JS는 onLoginSubmit함수 호출시 사실 인자를 담아서 호출하며
+                                                        // 해당 인자(event object)는 submit, click등의 event가 발생한 시점의 상황에 대한 기본 정보를 갖고 있다( 누가 submit주체인지, 몇 시에 submit을 했는지 등등..)
+```
+<br>
+<br>
+
+
+```html
+// index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Momentum App</title>
+</head>
+<body>
+    <form id="login-form">
+        <input 
+        required
+        maxlength="15"
+        type="text" 
+        placeholder="What  is your name?"
+        />
+        <input type="submit" value="Log In"/>
+    </form>
+    <a href="https://nomadcoders.co">Go to courses</a>    // test를 위해 링크 추가
+    <script src="app.js"></script>
+</body>
+</html>
+```
+
+
+```JavaScript                                                        
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+
+
+const link = document.querySelector("a")
+
+function onLoginSubmit(event){          
+    event.preventDefault();         // 링크를 클릭해도 넘어가지지 않는걸 확인
+    console.log(loginInput.value);    
+}
+
+loginForm.addEventListener("submit", onLoginSubmit);
+```
+
+
+```JavaScript
+function handleLinkClick(event){
+    event.preventDefault();
+    console.dir(event);
+}
+
+link.addEventListener("click", handleLinkClick);    // addEventListener안에 있는 함수는 직접 실행하지 않는다는 것을 기억(계속 반복할 만큼 중요한 부분이다) 
+```
+### 요약
+
+- addEventListener 안에 있는 함수는 직접 실행하지 않고, 브라우저가 실행
+- 브라우저에서 해당 이벤트에 대한 정보 즉, object를 가지게 된다
+- addEventListener의 함수에서 object에 대한 자리만 할당해주면
+- 해당 이벤트가 발생시킨 정보들에 대한 object들을 볼 수 있다
+- 이때 해당 이벤트가 가진 기본 Default값을 발생시키지 않기 하게 위해선 preventDefault를 이용하여 막을 수 있다
+<br>
+<br>
+
+
+## Getting Username
+
+- 로그인 후 form 자체가 사라져야 함
+- 방법 1 : HTML 요소 자체를 없애는 것
+- 방법 2 : CSS를 이용
+- 방법2를 사용, CSS를 이용한 방법으로 CSS에 hidden이라는 class를 만들어 보자 
+
+
+```JavaScript
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+const greeting = document.querySelector("#greeting");
+
+const HIDDEN_CLASSNAME = "hidden";  // 두 개 이상 쓰이기 때문에 변수로 만들었음
+                                    // 근데 왜 대문자?
+                                    // 일반적으로 string만 포함된 변수는 대문자로 표기하고 string을 저장하고 싶을 때 사용한다
+                                    // 그리고 loginForm이나 loginInput처럼 중요한 정보를 담은게 아니라서 대문자로 작성
+
+function onLoginSubmit(event){          
+    event.preventDefault();                         // 기본 동작은 실행되지 않도록 막아주고
+    loginForm.classList.add(HIDDEN_CLASSNAME);      // hidden이라는 class name을 더해줘서 form을 숨기고
+    const username = loginInput.value;              // user의 이름을 변수로 저장해주고, 그 이름은 h1안에 넣어줄거임
+    //greeting.innerText = "Hello " + username;     // 변수와 string을 합치거나, 변수를 string안에 포함시키는 다른 방법
+    greeting.innerText = `Hello ${username}`;       // ${변수명}, ``(백틱)
+    greeting.classList.remove(HIDDEN_CLASSNAME);                  
+}
+
+loginForm.addEventListener("submit", onLoginSubmit);
+```
+<br>
+<br>
+
+
+## Saving Username
+
+- 매번 user의 이름을 물을수는 없다
+- 새로고침 해도 user의 이름이 남아있을 수 있게 저장해보자
+- local storage라는 API가 있다 => 우리가 브라우저에 공짜로 뭔가를 기억할 수 있게 해주는 기능
+
+
+```JavaScript
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+const greeting = document.querySelector("#greeting");
+
+const HIDDEN_CLASSNAME = "hidden";  
+                                    
+                              
+                                  
+
+function onLoginSubmit(event){          
+    event.preventDefault();                      
+    loginForm.classList.add(HIDDEN_CLASSNAME);      
+    const username = loginInput.value;              
+    localStorage.setItem("username", username);    
+    greeting.innerText = `Hello ${username}`;      
+    greeting.classList.remove(HIDDEN_CLASSNAME);                  
+}
+
+loginForm.addEventListener("submit", onLoginSubmit);
+```
+<br>
+<br>
+
+
+
+
+## Loading Username
+
+- form을 보여주기 전에, 그리고 addEventListener를 하기 전에 체크를 해줘야 한다
+- local storage가 비어 있으면 form부터 보여주고 그대로 진행하면 된다
+- 하지만 local storage에 유저정보가 있으면 form을 보여줄게 아니라 h1 요소를 보여줘야 한다
+- 그렇다면 우선 할 일은, local storage에 유저정보 유무를 확인하는 것
+
+
+```JavaScript
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+const greeting = document.querySelector("#greeting");
+
+const HIDDEN_CLASSNAME = "hidden";  
+const USERNAME_KEY = "username";                                 
+
+function onLoginSubmit(event){          
+    event.preventDefault();                        
+    loginForm.classList.add(HIDDEN_CLASSNAME);  
+    const username = loginInput.value;             
+    localStorage.setItem(USERNAME_KEY, username);   
+    greeting.innerText = `Hello ${username}`;     
+    greeting.classList.remove(HIDDEN_CLASSNAME);                  
+}
+
+
+
+
+const savedUsername = localStorage.getItem(USERNAME_KEY);
+
+if(savedUsername === null) {
+    loginForm.classList.remove(HIDDEN_CLASSNAME);
+    loginForm.addEventListener("submit", onLoginSubmit);
+} else {
+    greeting.innerText = `Hello ${savedUsername}`;
+    greeting.classList.remove(HIDDEN_CLASSNAME);
+}
+```
+
+
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Momentum App</title>
+</head>
+<body>
+    <form class="hidden" id="login-form">   // if와 상관없이 form이 보이는 상태였기 때문에
+        <input                              // form 태그에도 hidden을 추가해서 form과 greeting 모두 숨긴 채로 시작하게 만든다
+        required
+        maxlength="15"
+        type="text" 
+        placeholder="What  is your name?"
+        />
+        <input type="submit" value="Log In"/>
+    </form>
+    <h1 id="greeting" class="hidden"></h1>
+    <script src="app.js"></script>
+</body>
+</html>
+```
+<br>
+<br>
+
+
+
+- 중복되고 있는 코드를 함수로 만들어서 코드를 간결하게 해보자
+```JavaScript
+// 중복코드
+greeting.innerText = `Hello ${savedUsername}`;
+greeting.classList.remove(HIDDEN_CLASSNAME);
+```
+
+
+```JavaScript
+function paintGreetings(username) {
+    greeting.innerText = `Hello ${username}`;
+    greeting.classList.remove(HIDDEN_CLASSNAME);
+}
+
+
+function onLoginSubmit(event){          
+    event.preventDefault();                        
+    loginForm.classList.add(HIDDEN_CLASSNAME);  
+    const username = loginInput.value;             
+    localStorage.setItem(USERNAME_KEY, username);   
+    paintGreetings(username);                  
+}
+
+
+const savedUsername = localStorage.getItem(USERNAME_KEY);
+
+
+if(savedUsername === null) {
+    loginForm.classList.remove(HIDDEN_CLASSNAME);
+    loginForm.addEventListener("submit", onLoginSubmit);
+} else {
+    paintGreetings(savedUsername);
+}
+```
+
+
+
+
+
