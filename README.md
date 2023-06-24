@@ -1075,3 +1075,171 @@ function handleTitleClick(){
                                     // 간단한 예시로 스마트폰에 잠긴 lock버튼을 누르면 스크린을 잠그고 다시 한번 누르면 스크린을 켜주는 버튼과도 같다
 h1.addEventListener("click", handleTitleClick);
 ```
+
+## Input Values
+
+
+#### login-form이라는 id를 우선 찾고
+```JavaScript
+// const loginForm = document.getElementById("login-form");
+const loginForm = document.querySelector("#login-form");
+```
+
+
+#### 그 안에서 input과 button을 찾았다
+```JavaScript
+// loginForm은 HTML element이므로, HTML element 안을 바로 검색 가능하다
+const loginInput = loginForm.querySelector("input");
+const loginButton = loginForm.querySelector("button");
+```
+
+
+#### 코드를 줄여보자
+```JavaScript
+// 이렇듯 document 또는 하나의 element를 통해서 검색이 가능하다
+const loginInput = document.querySelector("#login-form input");
+const loginButton = document.querySelector("#login-form button");
+```
+
+
+```JavaScript
+function onLoginBtnClick(){
+    console.log(loginInput);
+    console.log("Click");
+}
+
+loginButton.addEventListener("click", onLoginBtnClick);
+```
+
+
+```JavaScript
+// value를 통해 input의 내용을 가져올 수 있다
+function onLoginBtnClick(){
+    console.log(loginInput.value);
+}
+```
+
+## Form Submission
+
+
+- user가 이름을 입력했을 때만 button을 클릭할 수 있게 하고 싶다
+- user의 유효성을 검사해 보자(비어있거나, 너무 길거나 등등..)
+- 항상 user가 입력하는 값의 유효성을 확인하는 건 좋은 습관이다
+
+
+```JavaScript
+// app.js
+const loginInput = document.querySelector("#login-form input");
+const loginButton = document.querySelector("#login-form button");
+
+function onLoginBtnClick(){
+    const username = loginInput.value;
+    if(username === ""){
+        console.log("Please write your name");
+    } else if(username.length > 15){
+        alert("Your name is too long");
+    }
+}
+
+loginButton.addEventListener("click", onLoginBtnClick);
+```
+
+
+- 위의 방법은 JS만으로 작업 시에는 위 처럼 해야겠지만 그게 아니라면, 브라우저 자체의 기능을 사용할 수도 있다
+- 항상 최고의 tool을 사용해야하고, 이미 가지고 있는 기능들을 사용하는게 좋다
+- 가능하다면 JavaScript에서 구현하지 않고 HTML의 기본 속성을 이용할 수 있다면 최대한 이용하자!
+<br>
+<br>
+<br>
+
+```html
+// index.html
+<div id="login-div">
+        <input 
+        required        // input을 필수입력 항목으로 만들어준다
+        maxlength="15"  // input자체적으로 최대 글자수를 15로 조절할 수도 있다
+        type="text"     // 이런 식으로 HTML이 이미 우리를 위한 작업을 도와줄 수 있음, 이런 이점을 잘 활용하자
+        placeholder="What  is your name?"   
+        />
+        <button>Log In</button>  
+</div>                           // 그러나 문제는 Log In을 클릭할 때 HTML에서 확인 작업을 안 하고 있다
+<script src="app.js"></script>   // 그 이유는 div부분이 form이 아니기 때문
+                                 // input의 유효성 검사를 작동시키기 위해서는 input이 form안에 있어야 된다
+```
+
+
+```html
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Momentum App</title>
+</head>
+<body>
+    <form id="login-form">
+        <input 
+        required
+        maxlength="15"
+        type="text" 
+        placeholder="What  is your name?"
+        />
+        <button>Log In</button>
+    </form>
+    <script src="app.js"></script>
+</body>
+</html> 
+```
+
+
+```JavaScript
+// app.js
+const loginInput = document.querySelector("#login-form input");
+const loginButton = document.querySelector("#login-form button");
+
+function onLoginBtnClick(){
+    const username = loginInput.value;
+    console.log(username);    // username을 아직 받는다는 걸 확인하기 위해서 console.log(username)만 남겨준다
+}                             
+loginButton.addEventListener("click", onLoginBtnClick);
+```
+<br>
+<br>
+
+
+- html에서 button을 없애고 input type을 submint, value값에 Log In을 넣는다
+- html요소에 submit을 넣었기 때문에 더 이상 addEventListener가 필요없어 진다(입력 후 클릭이 아닌 엔터를 눌러도 form은 submit되기 때문)
+- 웹페이지를 확인해보면 값을 입력하고 버튼을 누르면, 새로고침이 실행되면서 값이 사라져 버린다
+- `form`이 `submit`되고 있기 때문이다(새로고침)
+
+
+```html
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>Momentum App</title>
+</head>
+<body>
+    <form id="login-form">
+        <input 
+        required
+        maxlength="15"
+        type="text" 
+        placeholder="What  is your name?"
+        />
+        <input type="submit" value="Log In"/>  
+    </form>
+    <script src="app.js"></script>
+</body>
+</html>
+```
+- input을 form안에 넣었을 경우에는 엔터를 누를 때마다 form은 자동적으로 submit되고 있음
+- 이건 우리가 원하는게 아님, 왜냐면 form이 submit될 때마다 페이지가 새로고침 되기 때문
+- 이제 우리는 브라우저가 새로고침하지 않고 user정보를 저장하도록 하고 싶다
+- form이 submit되는걸 막아보자
