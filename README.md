@@ -1628,7 +1628,7 @@ setInterval(getClock, 1000);
 
 - 1~9초까지는 한 자리수로 나오는 상황
 - 두 자리 수로 나오게 하고 싶음
-- 길이가 1인 문자가 있을 경우 padStart()를 써서 padding을 추가
+- 길이가 1인 문자가 있을 경우 `padStart()`를 써서 padding을 추가
 - `"1".padStart(2,"0")` 문자열 길이가 2가 되게하고 부족하다면 앞쪽에 "0"을 추가해라
 - 앞쪽에 채우는 이유는 padStart()를 썼기 때문, 뒤쪽에 채우는 padEnd()도 있음
 
@@ -1636,13 +1636,153 @@ setInterval(getClock, 1000);
 const clock = document.querySelector("h2#clock");
 
 function getClock() {
-    const date = new Date();
+    const date = new Date();                                      // Date object는 호출 당시의 현재 날짜랑 시간을 알려준다
     const hours = String(date.getHours()).padStart(2, "0")        // getHours()...second는 결과가 number이기 때문에 padStart를 쓸 수 없다 
     const minutes = String(date.getMinutes()).padStart(2, "0")    // 문자열로 변환 후 padStart() 가능
     const seconds = String(date.getSeconds()).padStart(2, "0")
     clock.innerText = `${hours}:${minutes}:${seconds}`;
 }
 
-getClock(); // 1초를 기다렸다 보여주기 때문에 시간을 바로 보여주지 않음, 따라서 getClick()을 통해 website가 로드되자마자 getClock()을 실행하고 매초마다 다시 실행되도록 한다
-setInterval(getClock, 1000);
+getClock();                     // 1초를 기다렸다 보여주기 때문에 시간을 바로 보여주지 않음, 따라서 getClick()을 통해 website가 로드되자마자 getClock()을 실행하고 매초마다 다시 실행되도록 한다
+setInterval(getClock, 1000);    // 1000ms 즉, 1초마다 getClock함수 반복 실행
+```
+
+
+# QUOTES AND BACKGROUND
+
+
+## Quotes
+
+```JavaScript
+// quotes.js
+
+const quotes = [
+    {
+        quote : "준비하지 않은 자는 기회가 와도 소용없다",
+        author : "알렉시스 드 토크빌"
+    },
+    {
+        quote : "노력에 집착하라. 숙명적인 노력을",
+        author : "레오나르도 다 빈치"
+    }, 
+    .......
+];
+```
+
+```html
+// index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Momentum App</title>
+</head>
+<body>
+    <form class="hidden" id="login-form">
+        <input 
+        required
+        maxlength="15"
+        type="text" 
+        placeholder="What  is your name?"
+        />
+        <input type="submit" value="Log In"/>
+    </form>
+    <h1 id="greeting" class="hidden"></h1>
+    <h2 id="clock">00:00</h2>
+    <div id="quote">
+        <span>
+            
+        </span>
+        <span>
+            
+        </span>
+    </div>
+    <script src="js/greetings.js"></script>
+    <script src="js/quotes.js"></script>
+    <script src="js/clock.js"></script>
+</body>
+</html>
+```
+
+
+
+
+```JavaScript
+// quotes.js
+
+// randomness(무작위성)에 대해 알아보자
+// 우리는 첫 번째로 Array 안에 있는 element에 어떻게 접근할지 생각해봐야 한다
+
+const quote = document.querySelector("#quote span:first-child");
+const author = document.querySelector("#quote span:last-child");
+
+
+console.log(quotes[0]);    // 첫 번째 element
+console.log(quotes[10-1]); // 마지막
+```
+<br>
+<br>
+
+
+#### 랜덤하게 화면에 출력하고싶은데 어떻게 구현할까?
+- `Math module` => JavaScript에서 이미 load되어 제공되고 있다
+- Math에는 여러 유용한 function들이 존재하는데 그 중 하나가 `random()`  => Math.random()
+- random()은 0부터 1사이의 랜덤한 숫자를 제공한다
+- Math.random() * 10; => 10을 곱하여 0~10 사이의 숫자들을 얻을 수 있게 된다
+- 그러나 결과로 나오는 숫자들은 Integer(정수)가 아니다, 소수점을 가진 `float`으로 결과값이 나옴
+- 해결하기 위한 function 세 가지가 있음
+- `round()` => 반올림
+- `ceil()` => 올림 1.01 => 2
+- `floor()` => 내림 1.9 => 1
+- floor을 사용해보자
+- Math.floor(Math.random() * 10);
+
+```JavaScript
+// quotes.js
+
+// 그러나 여기선 10으로 하드코딩을 했지만, 만약 명언이 10개가 아니라면 문제가 생김
+console.log(quotes[Math.floor(Math.random() * 10)]); 
+
+
+// Array의 길이를 알아내서 적용해보자
+console.log(quotes[Math.floor(Math.random() * quotes.length)]); 
+
+
+const todaysQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+quote.innerText = todaysQuote.quote;
+author.innerText = todaysQuote.author;
+```
+
+
+## Background
+
+```JavaScript
+// background.js
+
+const images = ["0.jpg", "1.jpg", "2.jpg"]
+
+const chosenImage = images[Math.floor(Math.random() * images.length)];
+
+console.log(chosenImage);
+
+// 이번엔 JavaScript를 이용해서 html에서 무언가를 가져왔던 것과는 달리 반대로 추가해볼거임
+// 다시 말해 html을 먼저 작성하고 JavaScript를 통해 작성한 html을 다뤄왔지만
+// JavaScrip에서 무언가를 생성하고 그걸 html에 추가해보자
+
+/* const bgImage = document.createElement("img");
+console.log(bgImage); // <img>태그가 출력되는 걸 확인할 수 있음 */
+
+
+const bgImage = document.createElement("img");
+
+bgImage.src = `img/${chosenImage}`;
+// console.log(bgImage);
+
+// appendChild()를 이용해 body에 html을 추가하자(가장 뒤에 추가)
+// prepend도 있는데  append와는 반대로 가장 위에 위치하게 됨
+document.body.appendChild(bgImage);
 ```
