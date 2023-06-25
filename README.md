@@ -1075,6 +1075,7 @@ function handleTitleClick(){
                                     // 간단한 예시로 스마트폰에 잠긴 lock버튼을 누르면 스크린을 잠그고 다시 한번 누르면 스크린을 켜주는 버튼과도 같다
 h1.addEventListener("click", handleTitleClick);
 ```
+# LOGIN
 
 ## Input Values
 
@@ -1530,7 +1531,118 @@ if(savedUsername === null) {
 }
 ```
 
+```JavaScript
+// 코드를 이렇게 수정해볼 수도 있음
+// paintGreeting의 인자를 받을 필요가 없어짐
+// localStorage를 두번 열어야 한다는 단점?이 있음
 
 
+const loginForm = document.querySelector("#login-form");
+const loginInput = document.querySelector("#login-form input");
+const greeting = document.querySelector("#greeting");
 
 
+const HIDDEN_CLASSNAME = "hidden";  
+const USERNAME_KEY = "username";                                 
+
+
+function paintGreetings() {
+    const username = localStorage.getItem(USERNAME_KEY);
+    greeting.innerText = `Hello ${username}`;
+    greeting.classList.remove(HIDDEN_CLASSNAME);
+
+}
+
+
+function onLoginSubmit(event){          
+    event.preventDefault();                        
+    loginForm.classList.add(HIDDEN_CLASSNAME);            
+    localStorage.setItem(USERNAME_KEY, loginInput.value);   
+    paintGreetings();                  
+}
+
+
+const savedUsername = localStorage.getItem(USERNAME_KEY);
+
+if(savedUsername === null) {
+    loginForm.classList.remove(HIDDEN_CLASSNAME);
+    loginForm.addEventListener("submit", onLoginSubmit);
+} else {
+    paintGreetings();
+}
+```
+
+
+# CLOCK
+
+## Intervals
+
+- interval이란 '매번' 일어나야 하는 무언가를 말한다
+- ex) '매 2초'라고 한다면 이게 interval
+- 매 2초마다 무슨 일이 일어나게 하고 싶다 => 이럴 때 쓰는게 interval
+- JavaScript에는 이러한 기능이 내장되어 있음
+- 예를 들어 서버가 매 2초마다 주식 시장 api를 확인해야 한다든지 등의 일을 수행하기 위해 쓰임
+- 이러한 기능을 제공하는 tool이 바로 setInterval()
+
+
+```JavaScript
+const clock = document.querySelector("h2#clock");
+
+function sayHello() {
+    console.log("hello");
+}
+
+// setInterval은 두 개의 인자를 받는다
+// 첫 번째는 내가 실행하고자 하는 function
+// 두 번째는 호출되는 function 간격을 몇 ms(milliseconds)로 할 지 쓰면 된다
+
+setInterval(sayHello, 5000);
+```
+
+```JavaScript
+const clock = document.querySelector("h2#clock");
+
+function sayHello() {
+    console.log("hello");
+}
+// 일정 시간 뒤에 실행되도록 하는 함수
+setTimeout(sayHello, 5000);
+```
+
+
+## Timeouts and Dates
+
+```JavaScript
+const clock = document.querySelector("h2#clock");
+
+function getClock() {
+    const date = new Date();
+    clock.innerText = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
+
+getClock(); // 1초를 기다렸다 보여주기 때문에 시간을 바로 보여주지 않음, 따라서 getClock()을 통해 website가 로드되자마자 getClock()을 실행하고 매초마다 다시 실행되도록 한다
+setInterval(getClock, 1000);
+```
+<br>
+<br>
+
+- 1~9초까지는 한 자리수로 나오는 상황
+- 두 자리 수로 나오게 하고 싶음
+- 길이가 1인 문자가 있을 경우 padStart()를 써서 padding을 추가
+- `"1".padStart(2,"0")` 문자열 길이가 2가 되게하고 부족하다면 앞쪽에 "0"을 추가해라
+- 앞쪽에 채우는 이유는 padStart()를 썼기 때문, 뒤쪽에 채우는 padEnd()도 있음
+
+```JavaScript
+const clock = document.querySelector("h2#clock");
+
+function getClock() {
+    const date = new Date();
+    const hours = String(date.getHours()).padStart(2, "0")        // getHours()...second는 결과가 number이기 때문에 padStart를 쓸 수 없다 
+    const minutes = String(date.getMinutes()).padStart(2, "0")    // 문자열로 변환 후 padStart() 가능
+    const seconds = String(date.getSeconds()).padStart(2, "0")
+    clock.innerText = `${hours}:${minutes}:${seconds}`;
+}
+
+getClock(); // 1초를 기다렸다 보여주기 때문에 시간을 바로 보여주지 않음, 따라서 getClick()을 통해 website가 로드되자마자 getClock()을 실행하고 매초마다 다시 실행되도록 한다
+setInterval(getClock, 1000);
+```
