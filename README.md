@@ -1786,3 +1786,171 @@ bgImage.src = `img/${chosenImage}`;
 // prepend도 있는데  append와는 반대로 가장 위에 위치하게 됨
 document.body.appendChild(bgImage);
 ```
+
+
+# TO DO LIST
+
+## Setup
+
+
+```JavaScript
+const toDoForm = document.getElementById("todo-form");
+const toDoInput = toDoForm.querySelector("input");      // const toDoInput = document.querySelector("#todo-form input"); 이렇게 전체에서 찾아가도 되지만 우리는 이미 toDoForm에서 toDoForm 태그를 찾아놨고 input이 toDoForm안에 있기 때문에 toDOForm에서 찾는다
+const toDoList = document.getElementById("todo-list");
+
+
+function handleToDoSubmit(event) {
+    event.preventDefault();
+    console.log(toDoInput.value);  // value값 받아오는 것 확인
+}
+
+toDoForm.addEventListener("submit", handleToDoSubmit); 
+```
+
+```JavaScript
+function handleToDoSubmit(event) {
+    event.preventDefault();
+    const newTodo = toDoInput.value;    // input의 현재 value를 새로운 변수에 넣어준다
+    toDoInput.value = "";               // 입력 후 enter를 누르면 입력값을 창에서 지워주고 input의 value를 비워준다, newTodo에는 영향 없음
+}                                       
+
+toDoForm.addEventListener("submit", handleToDoSubmit);
+```
+
+## Adding To Dos
+
+```JavaScript
+const toDoForm = document.getElementById("todo-form");
+const toDoInput = toDoForm.querySelector("input");      
+const toDoList = document.getElementById("todo-list");
+
+
+function paintTodo(newTodo) {                       // toDo를 그리는 함수
+    const li = document.createElement("li");        // li 태그 생성
+    const span = document.createElement("span");    // span 태그 생성 => 나중에 TodoList를 삭제하는 버튼을 만들거기 때문에 span필요
+    li.appendChild(span);                           // li밑으로 span을 넣는다
+    span.innerText = newTodo;                       // span의 텍스트는 사용자가 form에서 우리에게 준 newTodo값
+    toDoList.appendChild(li);                       // 새로운 li를 list(toDoList)에 추가하는 것
+}
+
+
+function handleToDoSubmit(event) {
+    event.preventDefault();
+    const newTodo = toDoInput.value;    
+    toDoInput.value = "";
+    paintTodo(newTodo);              
+}                                       
+
+toDoForm.addEventListener("submit", handleToDoSubmit);
+```
+
+## Deleting To Dos
+
+
+```JavaScript
+// span밑에 button을 넣을건데, 이 버튼은 event를 수신하고 있어야 한다
+
+const toDoForm = document.getElementById("todo-form");
+const toDoInput = toDoForm.querySelector("input");      
+const toDoList = document.getElementById("todo-list");
+
+// 삭제를 위해서는 어떤 버튼을 눌렀는지 알아야 한다
+function deleteTodo(event) {
+    const li = (event.target.parentElement);    // target은 클릭된 HTML element
+    li.remove();                                // parentElemnet는 클릭된 element의 부모
+}                                               
+                                                
+
+function paintTodo(newTodo) {                     
+    const li = document.createElement("li");       
+    const span = document.createElement("span"); 
+    span.innerText = newTodo;                     
+    const button = document.createElement("button");
+    button.innerText = "❌";   // button의 텍스트를 변경하고
+    button.addEventListener("click", deleteTodo);
+    li.appendChild(span);       // li에 span추가
+    li.appendChild(button);     // 그 다음 button을 li에 추가                          
+    toDoList.appendChild(li);   // 마지막으로 li를 toDoList에 추가하게 된다                    
+}
+
+
+function handleToDoSubmit(event) {
+    event.preventDefault();
+    const newTodo = toDoInput.value;    
+    toDoInput.value = "";
+    paintTodo(newTodo);              
+}                                       
+
+toDoForm.addEventListener("submit", handleToDoSubmit);
+```
+
+## Saving to Dos
+
+
+```JavaScript
+const toDoForm = document.getElementById("todo-form");
+const toDoInput = toDoForm.querySelector("input");      
+const toDoList = document.getElementById("todo-list");
+
+const toDos = [];
+
+function saveToDos() {
+    localStorage.setItem("todos", toDos);
+}
+
+
+function deleteTodo(event) {
+    const li = (event.target.parentElement);   
+    li.remove();                               
+}                                               
+                                                
+
+function paintTodo(newTodo) {                     
+    const li = document.createElement("li");       
+    const span = document.createElement("span"); 
+    span.innerText = newTodo;                     
+    const button = document.createElement("button");
+    button.innerText = "❌";   
+    button.addEventListener("click", deleteTodo);
+    li.appendChild(span);       
+    li.appendChild(button);                           
+    toDoList.appendChild(li);                
+}
+
+
+function handleToDoSubmit(event) {
+    event.preventDefault();
+    const newTodo = toDoInput.value;    
+    toDoInput.value = "";
+    toDos.push(newTodo);
+    paintTodo(newTodo);
+    saveToDos();              
+}                                       
+
+toDoForm.addEventListener("submit", handleToDoSubmit);
+```
+
+
+- 문제점
+1. local storage를 보면 잘 저장되고 있으나 새로고침 후 저장된 toDo들이 화면에 출력되지 않음
+2. 새로고침 이후에 새로운 toDo를 입력하면 기존에 저장되어 있던 toDo들은 초기화 됨
+3. 단순 텍스트가 아닌 array로 저장하고싶음
+
+- 브라우저가 가지고 있는 기능중 JavaScript object나, array 등 어떤 것이든 string으로 바꿔주는 기능이 있음
+- JSON.stringify()
+
+
+```JavaScript
+const toDoForm = document.getElementById("todo-form");
+const toDoInput = toDoForm.querySelector("input");      
+const toDoList = document.getElementById("todo-list");
+
+const toDos = [];
+
+function saveToDos() {
+    localStorage.setItem("todos", JSON.stringify(toDos));  // local storage를 확인해보면 ["a","b"...] array 형태로 저장되는걸 확인할 수 있다
+}                                                          // 물론 아직까지는 새로고침 후 toDos 입력시 덮어쓰고 있는 상태
+```
+
+
+## Loading To Dos
