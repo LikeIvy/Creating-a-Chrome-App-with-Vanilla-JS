@@ -2309,3 +2309,106 @@ if(savedToDos !== null){
     parsedToDos.forEach(paintTodo);
 }
 ```
+
+# WEATHER
+
+## Geolocation
+
+- 사용자의 geolocation(위치)를 주는 함수 `navigator`
+
+
+```JavaScript
+function onGeoOk(position){                 // JavaScript가 GeolocationPosition object를 하나의 input parameter로 전달해준다(그걸 받을 수 있는 인자(공간)을 넣어준 것)
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;  // 이렇게 받은 위도, 경도를 위치로 바꿀 서비스를 사용해야 함
+    console.log("You live in", lat, lng);   // 일단 API 계정을 먼저 열어보자
+}
+
+
+function onGeoError(){
+    alert("Can't find you. No weather for you");
+}
+
+
+
+// getCurrentPosition은 두 개의 인자가 필요함 
+// 하나는 모든 것이 잘 됐을 때 실행 될 함수  
+// 나머지 하나는 에러가 발생했을 때 실행 될 함수
+// 이 때 success 함수는 GeolocationPosition object 하나를 입력 받는다
+navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+```
+
+
+## Weather API
+
+
+```JavaScript
+const API_KET = ""
+
+
+function onGeoOk(position){    
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;  
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KET}`;
+    fetch(url);  // 실제로 URL에 갈 필요 없이 JavaScript가 대신 URL을 부른다 
+}                // console -> network -> preview를 보면 API를 이용해 정보를 잘 받아오고 있음을 확인할 수 있다
+                 
+
+function onGeoError(){
+    alert("Can't find you. No weather for you");
+}
+
+navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);      
+```
+
+
+```JavaScript
+const API_KET = ""
+
+
+function onGeoOk(position){    
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;  
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KET}&units=metric`;      // 그러나, preview를 보면 화씨로 온도를 받아오고 있음 => 화씨로 바꿔야함(API weather map참조)
+    fetch(url);                                                                                                             // url 끝에 &units=metric을 추가
+}                
+function onGeoError(){
+    alert("Can't find you. No weather for you");
+}
+
+navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError); 
+```
+
+
+```JavaScript
+const API_KET = ""
+
+
+// JavaScript는 URL을 부른 상태                                                                            
+// 하지만 아직 얻은 정보를 사용하지는 않았음
+// 얻었을 때 뭘 하라고 JavaScript에게 말해줘야 한다
+// fetch는 promise
+// promise는 당장 뭔가 일어나지 않고 시간이 좀 걸린 뒤에 일어난다는 뜻
+// 만약 서버에 무언가를 요청 => 응답하는데 5분 걸린다고 가정
+// 그렇다면 서버의 응답이 오기까지 기다려야 한다
+// 그래서, then을 사용하는 것
+function onGeoOk(position){    
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;  
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KET}&units=metric`;
+    fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+        const weather = document.querySelector("#weather span:first-child")
+        const city = document.querySelector("#weather span:last-child")
+        city.innerText = data.name; 
+        weather.innerText = data.weather[0].main;
+    });
+}
+
+function onGeoError(){
+    alert("Can't find you. No weather for you");
+}
+
+navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+```
